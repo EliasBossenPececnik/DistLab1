@@ -26,17 +26,4 @@ public class DBManager {
     public static Connection getConnection(){
         return getInstance().connection;
     }
-
-    public static String getname(String query){
-        String name = "";
-        try(Statement statement = getConnection().createStatement()){
-            ResultSet resultSet = statement.executeQuery("select name from item WHERE name = '"+query+"'");
-            while(resultSet.next()){
-                name = resultSet.getString("name");
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return name;
-    }
 }
