@@ -8,17 +8,15 @@ public class Item {
     private String name;
     private double price;
     private int stock;
-    private String category;
+    private Category category;
 
-    public Item(int id, String name, double price, int stock, String category) {
+    public Item(int id, String name, double price, int stock, Category category) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.stock = stock;
         this.category = category;
     }
-
-    public Item() {}
 
     public static List<Item> getAllItems() {
         return ItemDB.getAllItems();
