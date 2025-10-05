@@ -8,6 +8,7 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import se.kth.snomos.distlab1.BO.ItemHandler;
 import se.kth.snomos.distlab1.BO.ShoppingCart;
+import se.kth.snomos.distlab1.BO.UserHandler;
 
 @WebServlet(name = "Controller", value = "/index")
 public class Controller extends HttpServlet {
@@ -29,8 +30,8 @@ public class Controller extends HttpServlet {
 
         switch (action) {
             case "all" :
-                //List<ItemInformation> items = ItemHandler.getAllItems();
-                //request.setAttribute("items", items);
+                List<ItemInfo> items = ItemHandler.getAllItems();
+                request.setAttribute("items", items);
                 nextPage = "index.jsp";
                 break;
             case "shoppingCart" :
@@ -38,7 +39,7 @@ public class Controller extends HttpServlet {
                 //request.setAttribute("shoppingCart", shoppingCart);
                 nextPage = "shoppingCart.jsp";
         }
-        RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher(nextPage);
         dispatcher.forward(request, response);
     }
 
@@ -63,10 +64,11 @@ public class Controller extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
-        boolean loginSuccess = UserHandler.validateLogin(username, password);
-        if (loginSuccess) {
-            request.getSession().setAttribute("username", username);
-            response.sendRedirect(request.getContextPath() + "/index?action=all");
-        }
+        int loginSuccess = UserHandler.logIn(username, password);
+        //if (loginSuccess == 3) {
+          //  request.getSession().setAttribute("username", username);
+            //response.sendRedirect(request.getContextPath() + "/index?action=all");
+        //}
+        response.sendRedirect(request.getContextPath() + "/index?action=all");
     }
 }
