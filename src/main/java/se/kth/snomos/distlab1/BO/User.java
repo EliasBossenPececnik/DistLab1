@@ -19,6 +19,14 @@ public class User {
         return UserDB.logIn(username, password);
     }
 
+    public static boolean addUser(String username, String password) {
+        return UserDB.addUser(username, password);
+    }
+
+    public static boolean promoteUser(String username, String password) {
+        return UserDB.promoteUser(username, password);
+    }
+
     @Override
     public String toString() {
         String info = "";

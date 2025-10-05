@@ -4,7 +4,10 @@ import se.kth.snomos.distlab1.BO.Role;
 import se.kth.snomos.distlab1.BO.User;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
+
+import static se.kth.snomos.distlab1.BO.Role.*;
 
 public class UserDB extends User {
 
@@ -33,6 +36,33 @@ public class UserDB extends User {
             }
         }
         return 0;
+    }
+
+    public static boolean addUser(String username, String password) {
+        if (username == null || password == null || UserDB.userExists(username)) {
+            return false;
+        }
+        try(Statement statement = DBManager.getConnection().createStatement()){
+            statement.executeUpdate("INSERT INTO users(usernameU,passwordU,roleU) VALUES('"+username+"','"+password+"', '"+CUSTOMER+"')");
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+        return true;
+    }
+
+    public static boolean promoteUser(String username, String role) {
+        if (username == null || role == null || !UserDB.userExists(username)) {
+            return false;
+        }
+        try(Statement statement = DBManager.getConnection().createStatement()){
+            ResultSet re = statement.executeQuery("Select userId From users Where usernameU = '"+username+"'");
+            if (re.next()) {
+                statement.executeUpdate("Update users set roleU = '"+role+"' where userId = '"+re.getInt("userId")+"'");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return true;
     }
 
     private static boolean userExists(String userName) {
