@@ -10,8 +10,12 @@ public class ShoppingCart {
         items = new ArrayList<>();
     }
 
-    public void addItem(Item item) {
-        items.add(item);
+    public boolean addItem(Item item) {
+        if (item.getStock() > 0){
+            items.add(item);
+            return true;
+        }
+        return false;
     }
 
     public List<Item> getItems() {

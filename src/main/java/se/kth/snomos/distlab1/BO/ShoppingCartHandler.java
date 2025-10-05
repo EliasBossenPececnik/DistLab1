@@ -12,8 +12,7 @@ public class ShoppingCartHandler {
     }
 
     public boolean addItem(Item item) {
-        cart.addItem(item);
-        return true;
+        return cart.addItem(item);
     }
 
     public List<ItemInfo> getCart(){
