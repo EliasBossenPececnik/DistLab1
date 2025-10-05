@@ -14,7 +14,7 @@ public class ItemDB extends Item {
         super(id, name, price, stock, category);
     }
 
-    public static List<Item> getAllItems(){
+    public static List<Item> getAllItemsDB(){
         List<Item> items = new ArrayList<>();
         try(Statement statement = DBManager.getConnection().createStatement()){
             ResultSet resultSet = statement.executeQuery("select * from items");
@@ -29,7 +29,7 @@ public class ItemDB extends Item {
         return items;
     }
 
-    public static List<Item> getItemsByCategory(String category){
+    public static List<Item> getItemsByCategoryDB(String category){
         List<Item> items = new ArrayList<>();
         try(Statement statement = DBManager.getConnection().createStatement()){
             ResultSet resultSet = statement.executeQuery("select * from items where itemCategory = '"+category+"'");
