@@ -1,5 +1,7 @@
 package se.kth.snomos.distlab1.BO;
 
+import se.kth.snomos.distlab1.DB.UserDB;
+
 public class User {
     private int id;
     private String userName;
@@ -11,6 +13,10 @@ public class User {
         this.userName = userName;
         this.password = password;
         this.role = role;
+    }
+
+    public static int logIn(String username, String password) {
+        return UserDB.logIn(username, password);
     }
 
     @Override
