@@ -1,6 +1,8 @@
 package se.kth.snomos.distlab1.BO;
 
 import se.kth.snomos.distlab1.DB.ItemDB;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class Item {
@@ -19,11 +21,11 @@ public class Item {
     }
 
     public static List<Item> getAllItems() {
-        return ItemDB.getAllItems();
+        return ItemDB.getAllItemsDB();
     }
 
     public static List<Item> getItemsByCategory(String category) {
-        return ItemDB.getItemsByCategory(category);
+        return  ItemDB.getItemsByCategoryDB(category);
     }
 
     @Override
@@ -31,6 +33,18 @@ public class Item {
         String info = "";
         info += "Id: " + id + ", Name: " + name + ", Price: " + price + ", Stock: " + stock + ", Category: " + category;
         return info;
+    }
+    public String getName(){
+        return name;
+    }
+    public double getPrice(){
+        return price;
+    }
+    public int getStock(){
+        return stock;
+    }
+    public Category getCategory(){
+        return category;
     }
 
 }
