@@ -35,11 +35,25 @@ public class Controller extends HttpServlet {
                 nextPage = "index.jsp";
                 break;
             case "shoppingCart" :
-                request.setAttribute("shoppingCart", shoppingCartHandler.getCart());
+                request.setAttribute("shoppingCart", shoppingCartHandler.getCart().getItems());
                 nextPage = "shoppingcart.jsp";
                 break;
             case "staff" :
                 request.setAttribute("orders", OrderHandler.getAllOrders());
+                nextPage = "staff.jsp";
+                break;
+            case "viewOrderDetails" :
+                String orderIdString = request.getParameter("orderId");
+                request.setAttribute("orders", OrderHandler.getAllOrders());
+                if (orderIdString != null) {
+                    try {
+                        int orderId = Integer.parseInt(orderIdString);
+                        List<OrderInfo> orderInfo = OrderInfo.getOrder(orderId);
+                        request.setAttribute("orderInfo", orderInfo);
+                    } catch (NumberFormatException e) {
+                        System.err.println("Invalid Order ID provided for details view.");
+                    }
+                }
                 nextPage = "staff.jsp";
                 break;
             case "admin" :
@@ -163,9 +177,14 @@ public class Controller extends HttpServlet {
             double price = Double.parseDouble(priceString);
             int stock = Integer.parseInt(stockString);
 
-            ItemInfo existingItem = ItemHandler.getItemByName(name);
-
-            if (existingItem.getName() != null) {
+            List<ItemInfo> existingItems = ItemHandler.getAllItems();
+            boolean found = false;
+            for (ItemInfo i : existingItems) {
+                if (i.getName().equals(name)) {
+                    found = true;
+                }
+            }
+            if (found) {
                 ItemHandler.updateItem(name, price, stock, category);
             } else {
                 ItemHandler.addItem(name, price, stock, category);
@@ -190,7 +209,7 @@ public class Controller extends HttpServlet {
         if (orderIdString != null && !orderIdString.isEmpty()) {
             try {
                 int orderId = Integer.parseInt(orderIdString);
-                //OrderHandler.pack(orderId);
+                OrderHandler.pack(orderId);
 
             } catch (NumberFormatException e) {
                 System.err.println("Invalid Order ID format: " + orderIdString);

@@ -27,4 +27,8 @@ public class Order {
     public static void pack(int orderID){
         OrderDB.pack(orderID);
     }
+
+    public int getOrderID() {
+        return orderID;
+    }
 }

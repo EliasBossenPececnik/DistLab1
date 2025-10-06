@@ -20,4 +20,12 @@ public class OrderInfo {
     public static List<OrderInfo> getOrder(int orderID){
         return OrderDB.getOrder(orderID);
     }
+
+    public int getItemID() {
+        return itemID;
+    }
+
+    public int getOrderID() {
+        return orderID;
+    }
 }

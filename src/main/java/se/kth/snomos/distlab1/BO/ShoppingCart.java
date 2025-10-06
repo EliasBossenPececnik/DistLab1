@@ -45,6 +45,7 @@ public class ShoppingCart {
 
     public void clearCart(){
         items.clear();
+        itemInfos.clear();
     }
 
     @Override
