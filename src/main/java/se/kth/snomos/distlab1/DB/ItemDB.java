@@ -75,7 +75,7 @@ public class ItemDB extends Item {
             statement.setDouble(2, price);
             statement.setInt(3, stock);
             statement.setString(4, category);
-            statement.executeQuery();
+            statement.executeUpdate();
         }catch (Exception e){
             throw new RuntimeException(e);
         }
