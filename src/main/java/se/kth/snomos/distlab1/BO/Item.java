@@ -34,6 +34,10 @@ public class Item {
         ItemDB.addItem(name, price, stock, category);
     }
 
+    public static void editItem(String name, double price, int stock, String category){
+        ItemDB.editItem(name, price, stock, category);
+    }
+
     @Override
     public String toString() {
         String info = "";

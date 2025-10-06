@@ -9,6 +9,7 @@ public class ShoppingCart {
 
     public ShoppingCart() {
         items = new ArrayList<>();
+        itemInfos = new ArrayList<>();
     }
 
     public boolean addItem(ItemInfo itemInfo) {
