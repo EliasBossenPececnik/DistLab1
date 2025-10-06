@@ -3,6 +3,7 @@ package se.kth.snomos.distlab1.DB;
 import se.kth.snomos.distlab1.BO.Order;
 import se.kth.snomos.distlab1.BO.OrderInfo;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -12,8 +13,9 @@ public class OrderDB {
 
     public static List<Order> getAllOrders(){
         List<Order> orders = new ArrayList<>();
-        try(Statement statement = DBManager.getConnection().createStatement()){
-            ResultSet resultset = statement.executeQuery("SELECT * FROM orders");
+        String query = "SELECT * FROM Orders";
+        try(PreparedStatement statement = DBManager.getConnection().prepareStatement(query);){
+            ResultSet resultset = statement.executeQuery();
             while (resultset.next()) {
                 orders.add(new Order(resultset.getInt("orderId"),resultset.getInt("userId")));
             }
