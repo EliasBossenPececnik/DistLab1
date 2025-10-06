@@ -1,7 +1,5 @@
 package se.kth.snomos.distlab1.BO;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class ShoppingCartHandler {
 
