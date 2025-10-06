@@ -18,7 +18,8 @@ public class ItemDB extends Item {
     public static List<Item> getAllItemsDB(){
         List<Item> items = new ArrayList<>();
         String query = "SELECT * FROM items";
-        try(PreparedStatement statement = DBManager.getConnection().prepareStatement(query)){
+        Connection con = DBManager.getConnection();
+        try(PreparedStatement statement = con.prepareStatement(query)){
             ResultSet resultSet = statement.executeQuery();
             while(resultSet.next()){
                 items.add(new Item(resultSet.getInt("itemId"), resultSet.getString("itemName"),
@@ -34,7 +35,8 @@ public class ItemDB extends Item {
     public static List<Item> getItemsByCategoryDB(String category){
         List<Item> items = new ArrayList<>();
         String query = "select * from items where itemCategory = ?";
-        try(PreparedStatement statement = DBManager.getConnection().prepareStatement(query)){
+        Connection con = DBManager.getConnection();
+        try(PreparedStatement statement = con.prepareStatement(query)){
             statement.setString(1, category);
             ResultSet resultSet = statement.executeQuery();
             while(resultSet.next()){
@@ -50,7 +52,8 @@ public class ItemDB extends Item {
 
     public static Item getItemByName(String name){
         String query = "select * from items where itemName = ?";
-        try(PreparedStatement statement = DBManager.getConnection().prepareStatement(query)){
+        Connection connection = DBManager.getConnection();
+        try(PreparedStatement statement = connection.prepareStatement(query)){
             statement.setString(1, name);
             ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()){
@@ -59,14 +62,15 @@ public class ItemDB extends Item {
                         Category.valueOf(resultSet.getString("itemCategory")));
             }
         }catch (Exception e){
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return null;
     }
 
     public static void addItem(String name, double price, int stock, String category){
         String query = "Insert into items (itemName, itemPrice, itemStock) values (?, ?, ?, ?)";
-        try(PreparedStatement statement = DBManager.getConnection().prepareStatement(query)){
+        Connection con = DBManager.getConnection();
+        try(PreparedStatement statement = con.prepareStatement(query)){
             statement.setString(1, name);
             statement.setDouble(2, price);
             statement.setInt(3, stock);
@@ -77,22 +81,26 @@ public class ItemDB extends Item {
         }
     }
 
-    public static void editItem(String name, double price, int stock, String category){
-        String getQuery = "Select * from items where itemName = ?";
-        String insertQuery = "Update items set itemPrice = ?, itemStock = ?, itemCategory = ? where itemId = ?";
-        try(Connection conn = DBManager.getConnection()){
-            PreparedStatement statement = conn.prepareStatement(getQuery);
-            statement.setString(1, name);
-            ResultSet rs = statement.executeQuery();
-            if(rs.next()){
-                statement = conn.prepareStatement(insertQuery);
-                statement.setDouble(1, price);
-                statement.setInt(2, stock);
-                statement.setString(3, category);
-                statement.setInt(4, rs.getInt("itemId"));
-                statement.executeUpdate();
+    public static void editItem(String name, double price, int stock, String category) {
+        String getQuery = "SELECT itemId FROM items WHERE itemName = ?";
+        String updateQuery = "UPDATE items SET itemPrice = ?, itemStock = ?, itemCategory = ? WHERE itemId = ?";
+        Connection conn = DBManager.getConnection();
+        try (PreparedStatement getStmt = conn.prepareStatement(getQuery)) {
+
+            getStmt.setString(1, name);
+            try (ResultSet rs = getStmt.executeQuery()) {
+                if (rs.next()) {
+                    int itemId = rs.getInt("itemId");
+                    try (PreparedStatement updateStmt = conn.prepareStatement(updateQuery)) {
+                        updateStmt.setDouble(1, price);
+                        updateStmt.setInt(2, stock);
+                        updateStmt.setString(3, category);
+                        updateStmt.setInt(4, itemId);
+                        updateStmt.executeUpdate();
+                    }
+                }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

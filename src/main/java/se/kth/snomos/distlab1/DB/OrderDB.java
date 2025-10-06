@@ -13,7 +13,8 @@ public class OrderDB {
     public static List<Order> getAllOrders(){
         List<Order> orders = new ArrayList<>();
         String query = "SELECT * FROM Orders";
-        try(PreparedStatement statement = DBManager.getConnection().prepareStatement(query);){
+        Connection con = DBManager.getConnection();
+        try(PreparedStatement statement = con.prepareStatement(query);){
             ResultSet resultset = statement.executeQuery();
             while (resultset.next()) {
                 orders.add(new Order(resultset.getInt("orderId"),resultset.getInt("userId")));
@@ -26,7 +27,8 @@ public class OrderDB {
 
     public static List<OrderInfo> getOrder(int orderID){
         List<OrderInfo> order = new ArrayList<>();
-        try(Statement statement = DBManager.getConnection().createStatement()){
+        Connection con = DBManager.getConnection();
+        try(Statement statement = con.createStatement()){
             ResultSet resultset = statement.executeQuery("SELECT * FROM orders WHERE orderID = " + orderID);
             while (resultset.next()) {
                 order.add(new OrderInfo(resultset.getInt("orderinfoId"), resultset.getInt("orderId"),
