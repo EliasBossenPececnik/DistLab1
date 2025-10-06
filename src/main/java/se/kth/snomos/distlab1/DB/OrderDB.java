@@ -1,10 +1,8 @@
 package se.kth.snomos.distlab1.DB;
 
 import se.kth.snomos.distlab1.BO.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,44 +38,86 @@ public class OrderDB {
         return order;
     }
 
-    public static void placeOrder(ShoppingCart cart, String username){
-        int currentUserid = UserDB.userExists(username);
-        int currentOrder;
-        String orderQuery = "Insert into orders (userId) values (?)";
-        String selectQuery = "Select * from orders where userId = ?";
-        String orderInfo = "Insert into orderInfo (orderId, itemId, quantity) values (?, ?, ?)";
-        String updateItem = "Update items set itemStock = itemStock - ? where itemId = ?";
-        try{
-            Connection connection = DBManager.getConnection();
-            connection.setAutoCommit(false);
-            try {
-                PreparedStatement statement = connection.prepareStatement(orderQuery);
-                statement.setInt(1, currentUserid);
-                statement.executeQuery();
+    public static void placeOrder(ShoppingCart cart, String username) {
+        int userId = UserDB.userExists(username);
+        if (userId < 0) {
+            throw new IllegalArgumentException("Användaren hittades inte: " + username);
+        }
 
-                statement = connection.prepareStatement(selectQuery);
-                statement.setInt(1, currentUserid);
-                ResultSet rs = statement.executeQuery();
-                if(rs.next()){
-                    currentOrder = rs.getInt("orderId");
-                    for(CartItem i : cart.getCartItems()){
-                        statement = connection.prepareStatement(updateItem);
-                        statement.setInt(1, i.getQuantity());
-                        statement.executeQuery();
-                        statement = connection.prepareStatement(orderInfo);
-                        statement.setInt(1, currentOrder);
-                        statement.setInt(2,i.getItemID());
-                        statement.setInt(3,i.getQuantity());
-                        statement.executeQuery();
+        final String INSERT_ORDER = "INSERT INTO orders (userId) VALUES (?)";
+        final String INSERT_ORDER_INFO = "INSERT INTO orderinfo (orderId, itemId, quantity) VALUES (?, ?, ?)";
+        final String UPDATE_ITEM_STOCK = "UPDATE items SET itemStock = itemStock - ? WHERE itemId = ?";
+        Connection connection = null;
+        try {
+            connection = DBManager.getConnection();
+            connection.setAutoCommit(false);
+            int newOrderId;
+            try (PreparedStatement orderStmt = connection.prepareStatement(
+                    INSERT_ORDER, PreparedStatement.RETURN_GENERATED_KEYS)) {
+
+                orderStmt.setInt(1, userId);
+                int affectedRows = orderStmt.executeUpdate();
+                if (affectedRows == 0) {
+                    throw new SQLException("Kunde inte skapa orderhuvudet.");
+                }
+
+                try (ResultSet generatedKeys = orderStmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        newOrderId = generatedKeys.getInt(1);
+                    } else {
+                        throw new SQLException("Kunde inte hämta genererat orderId.");
                     }
                 }
-                connection.commit();
-            }catch (Exception e){
-                connection.rollback();
-            }finally {
-                connection.setAutoCommit(true);
             }
+
+            try (PreparedStatement updateStmt = connection.prepareStatement(UPDATE_ITEM_STOCK);
+                 PreparedStatement infoStmt = connection.prepareStatement(INSERT_ORDER_INFO)) {
+
+                for (CartItem item : cart.getCartItems()) {
+                    updateStmt.setInt(1, item.getQuantity());
+                    updateStmt.setInt(2, item.getItemID());
+                    updateStmt.addBatch();
+
+                    infoStmt.setInt(1, newOrderId);
+                    infoStmt.setInt(2, item.getItemID());
+                    infoStmt.setInt(3, item.getQuantity());
+                    infoStmt.addBatch();
+                }
+
+                updateStmt.executeBatch();
+                infoStmt.executeBatch();
+            }
+
+            connection.commit(); // COMMIT TRANSACTION
+
         } catch (Exception e) {
+            if (connection != null) {
+                try {
+                    System.err.println("Transaktion misslyckades. Gör rollback.");
+                    connection.rollback();
+                } catch (SQLException rollbackEx) {
+                    throw new RuntimeException("Rollback misslyckades.", rollbackEx);
+                }
+            }
+            throw new RuntimeException("Fel vid placering av ordern.", e);
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.setAutoCommit(true);
+                } catch (SQLException closeEx) {
+                    throw new RuntimeException("Fel vid stängning av anslutningen.", closeEx);
+                }
+            }
+        }
+    }
+
+    public static void pack(int orderID){
+        String query = "DELETE FROM orders WHERE orderId = ?";
+        Connection con = DBManager.getConnection();
+        try(PreparedStatement statement = con.prepareStatement(query)){
+            statement.setInt(1, orderID);
+            statement.executeQuery();
+        }catch(Exception e){
             throw new RuntimeException(e);
         }
     }
