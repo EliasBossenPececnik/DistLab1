@@ -23,4 +23,8 @@ public class Order {
     public static void placeOrder(ShoppingCart cart, String username){
         OrderDB.placeOrder(cart,username);
     }
+
+    public static void pack(int orderID){
+        OrderDB.pack(orderID);
+    }
 }

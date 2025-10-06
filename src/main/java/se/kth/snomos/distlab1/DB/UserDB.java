@@ -2,6 +2,8 @@ package se.kth.snomos.distlab1.DB;
 
 import se.kth.snomos.distlab1.BO.Role;
 import se.kth.snomos.distlab1.BO.User;
+
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,7 +21,8 @@ public class UserDB extends User {
         }
         if (UserDB.userExists(username) != -1){
             String query = "SELECT * FROM users WHERE usernameU = ? AND passwordU= ?";
-            try(PreparedStatement statement = DBManager.getConnection().prepareStatement(query)) {
+            Connection con = DBManager.getConnection();
+            try(PreparedStatement statement = con.prepareStatement(query)) {
                 statement.setString(1, username);
                 statement.setString(2, password);
                 ResultSet resultSet = statement.executeQuery();
@@ -44,7 +47,8 @@ public class UserDB extends User {
             return false;
         }
         String query = "INSERT INTO users (usernameU,passwordU,roleU) Values (?,?,?)";
-        try(PreparedStatement statement = DBManager.getConnection().prepareStatement(query)) {
+        Connection con = DBManager.getConnection();
+        try(PreparedStatement statement = con.prepareStatement(query)) {
             statement.setString(1, username);
             statement.setString(2, password);
             statement.setString(3, CUSTOMER.toString());
@@ -61,11 +65,12 @@ public class UserDB extends User {
         }
         String queryGetUser = "Select userId From users Where usernameU = ?";
         String querySetRole = "Update users set roleU = ? where userid = ?";
-        try(PreparedStatement statement = DBManager.getConnection().prepareStatement(queryGetUser)){
+        Connection con = DBManager.getConnection();
+        try(PreparedStatement statement = con.prepareStatement(queryGetUser)){
             statement.setString(1, username);
             ResultSet re = statement.executeQuery();
             if (re.next()) {
-                try (PreparedStatement ps = DBManager.getConnection().prepareStatement(querySetRole)){
+                try (PreparedStatement ps = con.prepareStatement(querySetRole)){
                     ps.setString(1, role);
                     ps.setInt(2, re.getInt("userId"));
                     ps.executeUpdate();
@@ -79,7 +84,8 @@ public class UserDB extends User {
 
     public static int userExists(String userName) {
         String query = "Select * from users Where usernameU = ?";
-        try(PreparedStatement statement = DBManager.getConnection().prepareStatement(query)){
+        Connection con = DBManager.getConnection();
+        try(PreparedStatement statement = con.prepareStatement(query)){
             statement.setString(1, userName);
             ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()){
