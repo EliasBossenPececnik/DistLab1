@@ -34,6 +34,9 @@ public class Item {
         info += "Id: " + id + ", Name: " + name + ", Price: " + price + ", Stock: " + stock + ", Category: " + category;
         return info;
     }
+    public int getId() {
+        return id;
+    }
     public String getName(){
         return name;
     }
