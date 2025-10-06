@@ -11,16 +11,15 @@ public class ShoppingCartHandler {
         cart = new ShoppingCart();
     }
 
-    public boolean addItem(Item item) {
-        cart.addItem(item);
-        return true;
+    public boolean addItem(ItemInfo item) {
+        return cart.addItem(item);
     }
 
     public List<ItemInfo> getCart(){
-        List<ItemInfo> items = new ArrayList<>();
-        for(Item item : cart.getItems()){
-            items.add(new ItemInfo(item.getName(), item.getPrice(), item.getStock(), item.getCategory()));
-        }
-        return items;
+        return cart.getItems();
+    }
+
+    public void clearCart(){
+        cart.clearCart();
     }
 }

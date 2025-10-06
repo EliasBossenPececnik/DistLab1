@@ -4,17 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ShoppingCart {
-    private List<Item> items;
+    private List<ItemInfo> items;
 
     public ShoppingCart() {
         items = new ArrayList<>();
     }
 
-    public void addItem(Item item) {
-        items.add(item);
+    public boolean addItem(ItemInfo itemInfo) {
+        if (itemInfo.getStock() > 0){
+            items.add(itemInfo);
+            return true;
+        }
+        return false;
     }
 
-    public List<Item> getItems() {
+    public List<ItemInfo> getItems() {
         return items;
+    }
+
+    public void clearCart(){
+        items.clear();
     }
 }

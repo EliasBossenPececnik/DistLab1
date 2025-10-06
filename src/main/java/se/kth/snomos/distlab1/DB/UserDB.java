@@ -2,9 +2,10 @@ package se.kth.snomos.distlab1.DB;
 
 import se.kth.snomos.distlab1.BO.Role;
 import se.kth.snomos.distlab1.BO.User;
-
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.SQLException;
+import static se.kth.snomos.distlab1.BO.Role.*;
 
 public class UserDB extends User {
 
@@ -17,8 +18,11 @@ public class UserDB extends User {
             return 0;
         }
         if (UserDB.userExists(username)){
-            try(Statement statement = DBManager.getConnection().createStatement()) {
-                ResultSet resultSet = statement.executeQuery("select roleU from users where usernameU = '"+username+"' AND passwordU = '"+password+"'");
+            String query = "SELECT * FROM users WHERE usernameU = ? AND passwordU= ?";
+            try(PreparedStatement statement = DBManager.getConnection().prepareStatement(query)) {
+                statement.setString(1, username);
+                statement.setString(2, password);
+                ResultSet resultSet = statement.executeQuery();
                 if (resultSet.next()) {
                     return switch (resultSet.getString("roleU")) {
                         case "ADMIN" -> 1;
@@ -35,9 +39,49 @@ public class UserDB extends User {
         return 0;
     }
 
+    public static boolean addUser(String username, String password) {
+        if (username == null || password == null || UserDB.userExists(username)) {
+            return false;
+        }
+        String query = "INSERT INTO users (usernameU,passwordU,roleU) Values (?,?,?)";
+        try(PreparedStatement statement = DBManager.getConnection().prepareStatement(query)) {
+            statement.setString(1, username);
+            statement.setString(2, password);
+            statement.setString(3, CUSTOMER.toString());
+            statement.executeUpdate();
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+        return true;
+    }
+
+    public static boolean promoteUser(String username, String role) {
+        if (username == null || role == null || !UserDB.userExists(username)) {
+            return false;
+        }
+        String queryGetUser = "Select userId From users Where usernameU = ?";
+        String querySetRole = "Update users set roleU = ? where userid = ?";
+        try(PreparedStatement statement = DBManager.getConnection().prepareStatement(queryGetUser)){
+            statement.setString(1, username);
+            ResultSet re = statement.executeQuery();
+            if (re.next()) {
+                try (PreparedStatement ps = DBManager.getConnection().prepareStatement(querySetRole)){
+                    ps.setString(1, role);
+                    ps.setInt(2, re.getInt("userId"));
+                    ps.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return true;
+    }
+
     private static boolean userExists(String userName) {
-        try(Statement statement = DBManager.getConnection().createStatement()){
-            ResultSet resultSet = statement.executeQuery("select * from users where usernameU = '"+userName+"'");
+        String query = "Select * from users Where usernameU = ?";
+        try(PreparedStatement statement = DBManager.getConnection().prepareStatement(query)){
+            statement.setString(1, userName);
+            ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()){
                 return true;
             }
@@ -46,6 +90,4 @@ public class UserDB extends User {
         }
         return false;
     }
-
-
 }
