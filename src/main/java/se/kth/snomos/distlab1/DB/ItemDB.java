@@ -2,11 +2,8 @@ package se.kth.snomos.distlab1.DB;
 
 import se.kth.snomos.distlab1.BO.Category;
 import se.kth.snomos.distlab1.BO.Item;
-
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,8 +1,6 @@
 package se.kth.snomos.distlab1.BO;
 
 import se.kth.snomos.distlab1.DB.ItemDB;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class Item {

@@ -2,7 +2,6 @@ package se.kth.snomos.distlab1.DB;
 
 import se.kth.snomos.distlab1.BO.Order;
 import se.kth.snomos.distlab1.BO.OrderInfo;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;

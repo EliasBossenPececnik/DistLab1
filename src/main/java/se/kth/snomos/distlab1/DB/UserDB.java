@@ -2,12 +2,9 @@ package se.kth.snomos.distlab1.DB;
 
 import se.kth.snomos.distlab1.BO.Role;
 import se.kth.snomos.distlab1.BO.User;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-
 import static se.kth.snomos.distlab1.BO.Role.*;
 
 public class UserDB extends User {
