@@ -10,11 +10,9 @@ public class OrderHandler {
     public static List<OrderInfo> getOrder(int orderID){
         return OrderInfo.getOrder(orderID);
     }
-
     public static void placeOrder(ShoppingCart cart, String username){
         Order.placeOrder(cart,username);
     }
-
     public static void pack(int orderId){
         Order.pack(orderId);
     }

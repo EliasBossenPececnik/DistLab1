@@ -25,9 +25,11 @@ public class OrderDB {
 
     public static List<OrderInfo> getOrder(int orderID){
         List<OrderInfo> order = new ArrayList<>();
+        String query = "SELECT * FROM OrderInfo WHERE orderId = ?";
         Connection con = DBManager.getConnection();
-        try(Statement statement = con.createStatement()){
-            ResultSet resultset = statement.executeQuery("SELECT * FROM orders WHERE orderID = " + orderID);
+        try(PreparedStatement statement = con.prepareStatement(query)){
+            statement.setInt(1, orderID);
+            ResultSet resultset = statement.executeQuery();
             while (resultset.next()) {
                 order.add(new OrderInfo(resultset.getInt("orderinfoId"), resultset.getInt("orderId"),
                         resultset.getInt("itemId"), resultset.getInt("quantity")));
