@@ -31,6 +31,10 @@ public class ItemInfo {
         return category;
     }
 
+    public int getItemID() {
+        return itemId;
+    }
+
     @Override
     public String toString() {
         String info = "";

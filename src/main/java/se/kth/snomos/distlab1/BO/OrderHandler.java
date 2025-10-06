@@ -1,5 +1,6 @@
 package se.kth.snomos.distlab1.BO;
 
+
 import java.util.List;
 
 public class OrderHandler {
@@ -10,5 +11,7 @@ public class OrderHandler {
         return OrderInfo.getOrder(orderID);
     }
 
-
+    public static void placeOrder(ShoppingCart cart, String username){
+        Order.placeOrder(cart,username);
+    }
 }
