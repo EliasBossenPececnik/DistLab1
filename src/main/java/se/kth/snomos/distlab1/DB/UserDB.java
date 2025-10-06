@@ -17,7 +17,7 @@ public class UserDB extends User {
         if (username == null || password == null) {
             return 0;
         }
-        if (UserDB.userExists(username)){
+        if (UserDB.userExists(username) != -1){
             String query = "SELECT * FROM users WHERE usernameU = ? AND passwordU= ?";
             try(PreparedStatement statement = DBManager.getConnection().prepareStatement(query)) {
                 statement.setString(1, username);
@@ -40,7 +40,7 @@ public class UserDB extends User {
     }
 
     public static boolean addUser(String username, String password) {
-        if (username == null || password == null || UserDB.userExists(username)) {
+        if (username == null || password == null || UserDB.userExists(username) != -1) {
             return false;
         }
         String query = "INSERT INTO users (usernameU,passwordU,roleU) Values (?,?,?)";
@@ -56,7 +56,7 @@ public class UserDB extends User {
     }
 
     public static boolean promoteUser(String username, String role) {
-        if (username == null || role == null || !UserDB.userExists(username)) {
+        if (username == null || role == null || UserDB.userExists(username) == -1) {
             return false;
         }
         String queryGetUser = "Select userId From users Where usernameU = ?";
@@ -77,17 +77,17 @@ public class UserDB extends User {
         return true;
     }
 
-    private static boolean userExists(String userName) {
+    public static int userExists(String userName) {
         String query = "Select * from users Where usernameU = ?";
         try(PreparedStatement statement = DBManager.getConnection().prepareStatement(query)){
             statement.setString(1, userName);
             ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()){
-                return true;
+                return resultSet.getInt("userId");
             }
         }catch (Exception e){
             throw new RuntimeException(e);
         }
-        return false;
+        return -1;
     }
 }

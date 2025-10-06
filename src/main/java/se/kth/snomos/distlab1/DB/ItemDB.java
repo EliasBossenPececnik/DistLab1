@@ -61,4 +61,17 @@ public class ItemDB extends Item {
         }
         return null;
     }
+
+    public static void addItem(String name, double price, int stock, String category){
+        String query = "Insert into items (itemName, itemPrice, itemStock) values (?, ?, ?, ?)";
+        try(PreparedStatement statement = DBManager.getConnection().prepareStatement(query)){
+            statement.setString(1, name);
+            statement.setDouble(2, price);
+            statement.setInt(3, stock);
+            statement.setString(4, category);
+            statement.executeUpdate();
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
 }

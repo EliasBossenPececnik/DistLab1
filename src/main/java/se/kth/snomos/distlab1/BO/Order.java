@@ -19,4 +19,8 @@ public class Order {
     public static List<Order> getAllOrders(){
         return OrderDB.getAllOrders();
     }
+
+    public static void placeOrder(ShoppingCart cart, String username){
+        OrderDB.placeOrder(cart,username);
+    }
 }

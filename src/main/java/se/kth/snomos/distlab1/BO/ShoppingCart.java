@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ShoppingCart {
-    private List<ItemInfo> items;
+    private List<CartItem> items;
+    private List<ItemInfo> itemInfos;
 
     public ShoppingCart() {
         items = new ArrayList<>();
@@ -12,13 +13,22 @@ public class ShoppingCart {
 
     public boolean addItem(ItemInfo itemInfo) {
         if (itemInfo.getStock() > 0){
-            items.add(itemInfo);
+            itemInfos.add(itemInfo);
+            for(CartItem item : items){
+                if(item.getItemID() == itemInfo.getItemID()){
+                    item.setQuantity(item.getQuantity()+1);
+                }
+            }
             return true;
         }
         return false;
     }
 
     public List<ItemInfo> getItems() {
+        return itemInfos;
+    }
+
+    public List<CartItem> getCartItems() {
         return items;
     }
 

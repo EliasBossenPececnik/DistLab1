@@ -30,6 +30,10 @@ public class Item {
         return ItemDB.getItemByName(name);
     }
 
+    public static void addItem(String name, double price, int stock, String category){
+        ItemDB.addItem(name, price, stock, category);
+    }
+
     @Override
     public String toString() {
         String info = "";
