@@ -45,7 +45,7 @@
     boolean isAdmin = "admin".equals(userRole);
     String disabledButton = isAdmin ? "" : "disabled"; %>
 <div style="margin-top: 20px;">
-    <a href="index?action=adminAction">
+    <a href="index?action=admin">
         <button <%= disabledButton %>>
             Admin Tools
         </button>

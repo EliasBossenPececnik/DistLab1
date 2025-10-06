@@ -31,6 +31,12 @@
   }%>
   </tbody>
 </table>
+<div style="margin-top: 20px;">
+  <form action="index" method="POST">
+    <input type="hidden" name="action" value="placeOrder">
+    <input type="submit" value="Place Order">
+  </form>
+</div>
 <a href="index?action=all">Back to Shopping</a>
 </body>
 </html>
