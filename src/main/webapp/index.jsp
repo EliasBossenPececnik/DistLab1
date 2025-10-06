@@ -57,5 +57,22 @@
     </form>
     --%>
 </div>
+
+<% userRole = (String) session.getAttribute("userRole");
+    boolean isStaff = "staff".equals(userRole);
+    String disabledStaffButton = isStaff ? "" : "disabled"; %>
+<div style="margin-top: 20px;">
+    <a href="index?action=staff">
+        <button <%= disabledStaffButton %>>
+            Staff Tools
+        </button>
+    </a>
+    <%--
+    <form action="index" method="POST">
+        <input type="hidden" name="action" value="staffSubmit">
+        <input type="submit" value="Staff Action" <%= disabledAttribute %>>
+    </form>
+    --%>
+</div>
 </body>
 </html>

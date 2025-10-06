@@ -39,6 +39,7 @@ public class Controller extends HttpServlet {
                 nextPage = "shoppingcart.jsp";
                 break;
             case "staff" :
+                request.setAttribute("orders", OrderHandler.getAllOrders());
                 nextPage = "staff.jsp";
                 break;
             case "admin" :
@@ -74,6 +75,9 @@ public class Controller extends HttpServlet {
             case "itemUpdate" :
                 handleItemUpdate(request, response);
                 break;
+            case "packOrder" :
+                handlePackOrder(request, response);
+                break;
         }
     }
 
@@ -93,6 +97,7 @@ public class Controller extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/index?action=all");
         } else if (loginSuccess == 2) {
             request.getSession().setAttribute("username", username);
+            request.getSession().setAttribute("userRole", "staff");
             response.sendRedirect(request.getContextPath() + "/index?action=all");
         } else if (loginSuccess == 1) {
             request.getSession().setAttribute("username", username);
@@ -125,9 +130,8 @@ public class Controller extends HttpServlet {
 
     private void handlePlaceOrder(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
-        List<ItemInfo> itemsToOrder = shoppingCartHandler.getCart();
-        if (itemsToOrder != null && !itemsToOrder.isEmpty()) {
-            OrderHandler.placeOrder(itemsToOrder, request.getSession().getAttribute("username"));
+        if (!shoppingCartHandler.getCart().getCartItems().isEmpty()) {
+            OrderHandler.placeOrder(shoppingCartHandler.getCart(), (String) request.getSession().getAttribute("username"));
             shoppingCartHandler.clearCart();
             response.sendRedirect(request.getContextPath() + "/index?action=all");
         } else {
@@ -162,9 +166,9 @@ public class Controller extends HttpServlet {
             ItemInfo existingItem = ItemHandler.getItemByName(name);
 
             if (existingItem.getName() != null) {
-                //ItemHandler.updateItem(name, price, stock, category);
+                ItemHandler.updateItem(name, price, stock, category);
             } else {
-                //ItemHandler.createItem(newItem);
+                ItemHandler.addItem(name, price, stock, category);
             }
 
             request.getSession().setAttribute("adminMessage", message);
@@ -176,5 +180,23 @@ public class Controller extends HttpServlet {
         }
 
         response.sendRedirect(request.getContextPath() + "/index?action=admin");
+    }
+
+    private void handlePackOrder(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+
+        String orderIdString = request.getParameter("orderId");
+
+        if (orderIdString != null && !orderIdString.isEmpty()) {
+            try {
+                int orderId = Integer.parseInt(orderIdString);
+                //OrderHandler.pack(orderId);
+
+            } catch (NumberFormatException e) {
+                System.err.println("Invalid Order ID format: " + orderIdString);
+            }
+        }
+
+        response.sendRedirect(request.getContextPath() + "/index?action=staff");
     }
 }
