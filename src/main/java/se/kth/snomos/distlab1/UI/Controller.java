@@ -100,11 +100,11 @@ public class Controller extends HttpServlet {
 
         if (item != null && !item.isEmpty()) {
             try {
-                //ItemInfo itemToAdd = ItemHandler.getItemByName(item);
+                ItemInfo itemToAdd = ItemHandler.getItemByName(item);
 
-                //if (itemToAdd != null) {
-                    //shoppingCartHandler.addItem(itemToAdd);
-               // }
+                if (itemToAdd != null) {
+                    shoppingCartHandler.addItem(itemToAdd);
+                }
 
             } catch (NumberFormatException e) {
                 System.err.println("Invalid item ID format: " + item);

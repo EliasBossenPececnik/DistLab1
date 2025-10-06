@@ -18,7 +18,7 @@
   </tr>
   </thead>
   <tbody>
-  <% List<ItemInfo> items = (List<ItemInfo>) request.getAttribute("items");
+  <% List<ItemInfo> items = (List<ItemInfo>) request.getAttribute("shoppingCart");
     if (items != null) {
       for (ItemInfo item : items) {%>
   <tr>
