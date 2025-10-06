@@ -15,8 +15,8 @@ public class ShoppingCartHandler {
         return cart.addItem(item);
     }
 
-    public List<ItemInfo> getCart(){
-        return cart.getItems();
+    public ShoppingCart getCart(){
+        return this.cart;
     }
 
     public void clearCart(){

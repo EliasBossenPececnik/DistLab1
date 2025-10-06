@@ -25,4 +25,7 @@ public class ItemHandler {
     public static void addItem(String name, double price, int stock,String category){
         Item.addItem(name, price, stock, category);
     };
+    public static void updateItem(String name, double price, int stock, String category){
+        Item.editItem(name,price,stock,category);
+    }
 }

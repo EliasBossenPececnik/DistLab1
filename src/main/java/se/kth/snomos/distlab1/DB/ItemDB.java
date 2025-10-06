@@ -2,6 +2,8 @@ package se.kth.snomos.distlab1.DB;
 
 import se.kth.snomos.distlab1.BO.Category;
 import se.kth.snomos.distlab1.BO.Item;
+
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -57,7 +59,7 @@ public class ItemDB extends Item {
                         Category.valueOf(resultSet.getString("itemCategory")));
             }
         }catch (Exception e){
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         return null;
     }
@@ -70,6 +72,26 @@ public class ItemDB extends Item {
             statement.setInt(3, stock);
             statement.setString(4, category);
             statement.executeUpdate();
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void editItem(String name, double price, int stock, String category){
+        String getQuery = "Select * from items where itemName = ?";
+        String insertQuery = "Update items set itemPrice = ?, itemStock = ?, itemCategory = ? where itemId = ?";
+        try(Connection conn = DBManager.getConnection()){
+            PreparedStatement statement = conn.prepareStatement(getQuery);
+            statement.setString(1, name);
+            ResultSet rs = statement.executeQuery();
+            if(rs.next()){
+                statement = conn.prepareStatement(insertQuery);
+                statement.setDouble(1, price);
+                statement.setInt(2, stock);
+                statement.setString(3, category);
+                statement.setInt(4, rs.getInt("itemId"));
+                statement.executeUpdate();
+            }
         }catch (Exception e){
             throw new RuntimeException(e);
         }
