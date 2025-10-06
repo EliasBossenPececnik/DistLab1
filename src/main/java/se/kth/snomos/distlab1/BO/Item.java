@@ -30,6 +30,10 @@ public class Item {
         return ItemDB.getItemByName(name);
     }
 
+    public static Item getItemById(int id){
+        return ItemDB.getItemById(id);
+    }
+
     public static void addItem(String name, double price, int stock, String category){
         ItemDB.addItem(name, price, stock, category);
     }

@@ -67,6 +67,23 @@ public class ItemDB extends Item {
         return null;
     }
 
+    public static Item getItemById(int id){
+        String query = "select * from items where itemId = ?";
+        Connection con = DBManager.getConnection();
+        try(PreparedStatement statement = con.prepareStatement(query)){
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            if(resultSet.next()){
+                return new Item(resultSet.getInt("itemId"),resultSet.getString("itemName"),
+                        resultSet.getDouble("itemPrice"), resultSet.getInt("itemStock"),
+                        Category.valueOf(resultSet.getString("itemCategory")));
+            }
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
     public static void addItem(String name, double price, int stock, String category){
         String query = "Insert into items (itemName, itemPrice, itemStock, itemCategory) values (?, ?, ?, ?)";
         Connection con = DBManager.getConnection();

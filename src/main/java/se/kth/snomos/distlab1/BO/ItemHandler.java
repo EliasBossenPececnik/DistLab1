@@ -22,6 +22,10 @@ public class ItemHandler {
         Item i = Item.getItemByName(name);
         return new ItemInfo(i.getId(), i.getName(), i.getPrice(), i.getStock(),i.getCategory());
     }
+    public static ItemInfo getItemByID(int id){
+        Item i = Item.getItemById(id);
+        return new ItemInfo(i.getId(), i.getName(), i.getPrice(), i.getStock(),i.getCategory());
+    }
     public static void addItem(String name, double price, int stock,String category){
         Item.addItem(name, price, stock, category);
     };
