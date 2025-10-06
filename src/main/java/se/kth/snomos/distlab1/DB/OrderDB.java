@@ -48,10 +48,10 @@ public class OrderDB {
         final String INSERT_ORDER_INFO = "INSERT INTO orderinfo (orderId, itemId, quantity) VALUES (?, ?, ?)";
         final String UPDATE_ITEM_STOCK = "UPDATE items SET itemStock = itemStock - ? WHERE itemId = ?";
         Connection connection = null;
+        int newOrderId;
         try {
             connection = DBManager.getConnection();
             connection.setAutoCommit(false);
-            int newOrderId;
             try (PreparedStatement orderStmt = connection.prepareStatement(
                     INSERT_ORDER, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
@@ -64,6 +64,7 @@ public class OrderDB {
                 try (ResultSet generatedKeys = orderStmt.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         newOrderId = generatedKeys.getInt(1);
+
                     } else {
                         throw new SQLException("Kunde inte hämta genererat orderId.");
                     }
@@ -74,6 +75,7 @@ public class OrderDB {
                  PreparedStatement infoStmt = connection.prepareStatement(INSERT_ORDER_INFO)) {
 
                 for (CartItem item : cart.getCartItems()) {
+                    System.out.println("item.getItemID()" + "item.getQuantity()");
                     updateStmt.setInt(1, item.getQuantity());
                     updateStmt.setInt(2, item.getItemID());
                     updateStmt.addBatch();
@@ -87,9 +89,7 @@ public class OrderDB {
                 updateStmt.executeBatch();
                 infoStmt.executeBatch();
             }
-
-            connection.commit(); // COMMIT TRANSACTION
-
+            connection.commit();
         } catch (Exception e) {
             if (connection != null) {
                 try {
@@ -116,7 +116,7 @@ public class OrderDB {
         Connection con = DBManager.getConnection();
         try(PreparedStatement statement = con.prepareStatement(query)){
             statement.setInt(1, orderID);
-            statement.executeQuery();
+            statement.executeUpdate();
         }catch(Exception e){
             throw new RuntimeException(e);
         }

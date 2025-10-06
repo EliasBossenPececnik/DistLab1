@@ -36,4 +36,8 @@ public class ShoppingCart {
     public void clearCart(){
         items.clear();
     }
+    @Override
+    public String toString() {
+        return "ShoppingCart{" + "items=" + items + '}';
+    }
 }
