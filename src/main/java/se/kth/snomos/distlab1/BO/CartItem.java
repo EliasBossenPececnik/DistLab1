@@ -18,6 +18,10 @@ public class CartItem {
         this.quantity = quantity;
     }
 
+    public boolean containsItem(int itemID){
+        return itemID == this.itemID;
+    }
+
     @Override
     public String toString() {
         return "CartItem{" + "itemID=" + itemID + ", quantity=" + quantity + '}';

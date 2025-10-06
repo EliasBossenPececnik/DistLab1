@@ -73,9 +73,7 @@ public class OrderDB {
 
             try (PreparedStatement updateStmt = connection.prepareStatement(UPDATE_ITEM_STOCK);
                  PreparedStatement infoStmt = connection.prepareStatement(INSERT_ORDER_INFO)) {
-
                 for (CartItem item : cart.getCartItems()) {
-                    System.out.println("item.getItemID()" + "item.getQuantity()");
                     updateStmt.setInt(1, item.getQuantity());
                     updateStmt.setInt(2, item.getItemID());
                     updateStmt.addBatch();
