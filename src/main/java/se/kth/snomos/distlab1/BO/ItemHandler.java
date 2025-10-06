@@ -18,4 +18,8 @@ public class ItemHandler {
         }
         return list;
     }
+    public static ItemInfo getItemByName(String name){
+        Item i = Item.getItemByName(name);
+        return new ItemInfo(i.getId(), i.getName(), i.getPrice(), i.getStock(),i.getCategory());
+    }
 }

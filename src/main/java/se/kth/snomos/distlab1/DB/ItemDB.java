@@ -3,6 +3,8 @@ package se.kth.snomos.distlab1.DB;
 import se.kth.snomos.distlab1.BO.Category;
 import se.kth.snomos.distlab1.BO.Item;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -42,5 +44,22 @@ public class ItemDB extends Item {
             throw new RuntimeException(e);
         }
         return items;
+    }
+
+    public static Item getItemByName(String name){
+        String query = "select * from items where itemName = ?";
+        Connection connection = DBManager.getConnection();
+        try(PreparedStatement statement = connection.prepareStatement(query)){
+            statement.setString(1, name);
+            ResultSet resultSet = statement.executeQuery();
+            if(resultSet.next()){
+                return new Item(resultSet.getInt("itemId"), resultSet.getString("itemName"),
+                        resultSet.getDouble("itemPrice"), resultSet.getInt("itemStock"),
+                        Category.valueOf(resultSet.getString("itemCategory")));
+            }
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+        return null;
     }
 }

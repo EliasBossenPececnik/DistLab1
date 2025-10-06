@@ -28,6 +28,10 @@ public class Item {
         return  ItemDB.getItemsByCategoryDB(category);
     }
 
+    public static Item getItemByName(String name){
+        return ItemDB.getItemByName(name);
+    }
+
     @Override
     public String toString() {
         String info = "";
