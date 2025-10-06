@@ -13,6 +13,22 @@ public class ItemInfo {
         this.category = category;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
     @Override
     public String toString() {
         String info = "";
