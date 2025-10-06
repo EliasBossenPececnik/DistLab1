@@ -10,5 +10,7 @@ public class OrderHandler {
         return OrderInfo.getOrder(orderID);
     }
 
+    public static void placeOrder(List<ItemInfo> items, String username){
 
+    }
 }

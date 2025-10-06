@@ -9,7 +9,7 @@ public class UserHandler {
         return User.addUser(username,password);
     }
 
-    public static boolean promoteUser(String username, String password){
-        return User.promoteUser(username,password);
+    public static boolean promoteUser(String username, String role){
+        return User.promoteUser(username,role);
     }
 }

@@ -23,8 +23,8 @@ public class User {
         return UserDB.addUser(username, password);
     }
 
-    public static boolean promoteUser(String username, String password) {
-        return UserDB.promoteUser(username, password);
+    public static boolean promoteUser(String username, String role) {
+        return UserDB.promoteUser(username, role);
     }
 
     @Override
