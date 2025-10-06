@@ -127,7 +127,7 @@ public class Controller extends HttpServlet {
         throws ServletException, IOException {
         List<ItemInfo> itemsToOrder = shoppingCartHandler.getCart();
         if (itemsToOrder != null && !itemsToOrder.isEmpty()) {
-            //OrderHandler.placeOrder(itemsToOrder, request.getSession().getAttribute("username"));
+            OrderHandler.placeOrder(itemsToOrder, request.getSession().getAttribute("username"));
             shoppingCartHandler.clearCart();
             response.sendRedirect(request.getContextPath() + "/index?action=all");
         } else {
